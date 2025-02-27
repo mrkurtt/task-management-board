@@ -8,16 +8,13 @@ import { LuListMinus } from 'react-icons/lu';
 import { IoPersonCircleOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import SearchBar from './input/SearchBar';
-import { MdDarkMode } from 'react-icons/md';
-import Button from './button/Button';
 import {
 	Dropdown,
 	DropdownTrigger,
 	DropdownMenu,
 	DropdownItem,
-	Avatar,
-	User,
 } from '@heroui/react';
+import { useBoardStore } from '@/stores/useBoardStore';
 
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -26,12 +23,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const [boardOpen, setBoardOpen] = useState(false);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
-	const projects = [
-		{ id: 'mindlax', name: 'Mindlax' },
-		{ id: 'sintech', name: 'SinTech' },
-		{ id: 'shopicia', name: 'Shopicia' },
-		{ id: 'byscape', name: 'Byscape' },
-	];
+	const boards = useBoardStore((state) => state.boards);
 
 	return (
 		<div className="flex min-h-screen">
@@ -45,7 +37,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
 			{/* Sidebar */}
 			<div
-				className={`fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
+				className={`fixed top-0 left-0 h-full min-w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
 					isOpen ? 'translate-x-0' : '-translate-x-64'
 				} md:translate-x-0 md:static md:w-60`}
 			>
@@ -85,19 +77,22 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 						{/* Dropdown Items */}
 						{boardOpen && (
 							<ul className="ml-8 mt-2 space-y-2">
-								{projects.map((project) => (
-									<li key={project.id} onClick={() => setActive(project.name)}>
+								{boards.map((board) => (
+									<li
+										key={board.id}
+										onClick={() => setActive(board.board_name)}
+									>
 										<Link
-											href={`/boards`}
+											href={`/boards/${board.id}`}
 											className={`text-sm block px-4 py-2 hover:bg-gray-100 rounded ${
-												active === project.name
+												active === board.board_name
 													? 'bg-gray-100 text-blue-500'
 													: 'text-gray-500'
 											}`}
 										>
 											<div className="flex items-center gap-x-1">
 												<LuListMinus size={20} />
-												{project.name}
+												{board.board_name}
 											</div>
 										</Link>
 									</li>
@@ -120,12 +115,10 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 					>
 						<FiMenu size={24} />
 					</button>
-
 					<SearchBar
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
 					/>
-
 					<div>
 						<Dropdown placement="bottom-end">
 							<DropdownTrigger>
@@ -149,7 +142,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 				</header>
 
 				{/* Page Content */}
-				<main className="p-6">{children}</main>
+				<main className="max-w-full p-6">{children}</main>
 			</div>
 		</div>
 	);
