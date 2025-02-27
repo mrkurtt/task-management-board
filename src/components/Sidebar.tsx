@@ -88,7 +88,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 								{projects.map((project) => (
 									<li key={project.id} onClick={() => setActive(project.name)}>
 										<Link
-											href={`/home`}
+											href={`/boards`}
 											className={`text-sm block px-4 py-2 hover:bg-gray-100 rounded ${
 												active === project.name
 													? 'bg-gray-100 text-blue-500'
@@ -111,8 +111,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			{/* Main Content */}
 			<div className="flex-1">
 				{/* Navbar */}
-				<header className=" bg-white shadow-md p-4 flex justify-between items-center">
-					{/* Menu button for mobile */}
+				<header className=" bg-white border-b border-gray-300 p-4 flex justify-between items-center">
 					<button
 						type="button"
 						title="Open Menu"
@@ -122,13 +121,11 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 						<FiMenu size={24} />
 					</button>
 
-					{/* Search Bar */}
 					<SearchBar
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
 					/>
 
-					{/* User Actions */}
 					<div>
 						<Dropdown placement="bottom-end">
 							<DropdownTrigger>
@@ -143,7 +140,6 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 								</button>
 							</DropdownTrigger>
 							<DropdownMenu aria-label="Profile Actions" variant="flat">
-								{/* <DropdownItem key="settings">Profile</DropdownItem> */}
 								<DropdownItem key="logout" color="danger">
 									Log Out
 								</DropdownItem>

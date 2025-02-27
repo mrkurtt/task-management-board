@@ -4,7 +4,7 @@ import React from 'react';
 const HomePage = () => {
 	return (
 		<div>
-			<Button>Hello</Button>
+			<Button color="primary">Hello</Button>
 		</div>
 	);
 };
