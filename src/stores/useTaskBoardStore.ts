@@ -13,7 +13,7 @@ export interface Task {
 export interface Column {
 	id: string;
 	column_name: string;
-	tasks?: Task[];
+	tasks: Task[];
 }
 
 export interface Board {
@@ -88,7 +88,7 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 	getTasksByColumnId: (columnId) => {
 		for (const board of get().boards) {
 			for (const column of board.columns) {
-				if (column.id === columnId) return column.tasks || [];
+				if (column.id === columnId) return column.tasks;
 			}
 		}
 		return [];
@@ -233,56 +233,56 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 	// Move task to another column
 	moveTaskToColumn: (boardId, fromColumnId, toColumnId, taskId) =>
 		set((state) => {
-			let movedTask: Task | null = null;
-
-			const updatedBoards = state.boards.map((board) =>
-				board.id === boardId
-					? {
-							...board,
-							columns: board.columns.map((column) => {
-								if (column.id === fromColumnId) {
-									const taskIndex = column.tasks?.findIndex(
-										(task) => task.id === taskId
-									);
-									if (taskIndex !== undefined && taskIndex !== -1) {
-										movedTask = column.tasks?.[taskIndex] || null;
-										const updatedTasks = column.tasks ? [...column.tasks] : [];
-										updatedTasks.splice(taskIndex, 1);
-										return { ...column, tasks: updatedTasks };
-									}
-								}
-								return column;
-							}),
-					  }
-					: board
+			const boardIndex = state.boards.findIndex(
+				(board) => board.id === boardId
 			);
+			if (boardIndex === -1) return state;
 
-			if (movedTask) {
-				const updatedBoardsWithMovedTask = updatedBoards.map((board) =>
-					board.id === boardId
-						? {
-								...board,
-								columns: board.columns.map((column) =>
-									column.id === toColumnId
-										? {
-												...column,
-												tasks: [...(column.tasks || []), movedTask!],
-										  }
-										: column
-								),
-						  }
-						: board
-				);
+			const board = state.boards[boardIndex];
 
-				return {
-					boards: updatedBoardsWithMovedTask,
-					activeBoard:
-						updatedBoardsWithMovedTask.find((b) => b.id === boardId) ||
-						state.activeBoard,
-				};
-			}
+			const fromColumnIndex = board.columns.findIndex(
+				(col) => col.id === fromColumnId
+			);
+			if (fromColumnIndex === -1) return state;
 
-			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
+			const toColumnIndex = board.columns.findIndex(
+				(col) => col.id === toColumnId
+			);
+			if (toColumnIndex === -1) return state;
+
+			// Find and remove the task from the source column
+			const taskIndex =
+				board.columns[fromColumnIndex].tasks?.findIndex(
+					(task) => task.id === taskId
+				) ?? -1;
+			if (taskIndex === -1) return state;
+
+			const movedTask = board.columns[fromColumnIndex].tasks?.[taskIndex];
+
+			const updatedColumns = board.columns.map((col, index) => {
+				if (index === fromColumnIndex) {
+					return {
+						...col,
+						tasks: (col.tasks ?? []).filter((task) => task.id !== taskId),
+					};
+				}
+				if (index === toColumnIndex) {
+					return {
+						...col,
+						tasks: [...(col.tasks || []), movedTask],
+					};
+				}
+				return col;
+			});
+
+			const updatedBoard = {
+				...board,
+				columns: updatedColumns,
+			};
+
+			const updatedBoards: any = state.boards.map((b, i) =>
+				i === boardIndex ? updatedBoard : b
+			);
 
 			return {
 				boards: updatedBoards,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { FaArrowRight } from 'react-icons/fa6';
 import DeleteTask from './DeleteTask';
@@ -27,13 +27,19 @@ interface TaskProps {
 }
 
 const TaskCard = ({ task, column_id, column_name }: TaskProps) => {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const { activeBoard, moveTaskToColumn } = useTaskBoardStore((state) => state);
 	const [toColumn, setToColumn] = useState('');
 
 	const handleMoveTask = () => {
 		moveTaskToColumn(activeBoard.id, column_id, toColumn, task.id);
+		onClose();
 	};
+
+	useEffect(() => {
+		handleMoveTask();
+	}, [toColumn]);
+
 	return (
 		<>
 			<div
@@ -134,9 +140,7 @@ const TaskCard = ({ task, column_id, column_name }: TaskProps) => {
 														<DropdownItem
 															key={col.id}
 															onPress={() => {
-																setToColumn(col.column_name);
-																handleMoveTask();
-																onClose();
+																setToColumn(col.id);
 															}}
 														>
 															{col.column_name}
