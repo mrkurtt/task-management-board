@@ -4,12 +4,22 @@ import React, { useState } from 'react';
 import Input from '../input/Input';
 import Button from '../button/Button';
 import AppTitle from '../shared/AppTitle';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 const LoginForm: React.FC = () => {
+	const router = useRouter();
+
 	const [emailAddress, setEmailAddress] = useState('');
 	const [password, setPassword] = useState('');
 
-	const handleLogin = async () => {};
+	const { login } = useAuthStore((state) => state);
+
+	const handleLogin = async () => {
+		const loggedIn = await login(emailAddress, password);
+
+		if (loggedIn) router.push('/boards');
+	};
 
 	return (
 		<div className="flex flex-col w-full h-screen items-center justify-center bg-gray-50">
@@ -33,7 +43,7 @@ const LoginForm: React.FC = () => {
 						onChange={(e) => setPassword(e.target.value)}
 					/>
 				</div>
-				<Button label="Login" onClick={handleLogin} />
+				<Button label="Login" onPress={handleLogin} />
 
 				<p className="text-xs text-center">
 					Don't have an account?

@@ -3,14 +3,22 @@
 import Button from '@/components/button/Button';
 import Input from '@/components/input/Input';
 import AppTitle from '@/components/shared/AppTitle';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 const SignUpPage: React.FC = () => {
+	const router = useRouter();
+
 	const [name, setName] = useState('');
 	const [emailAddress, setEmailAddress] = useState('');
 	const [password, setPassword] = useState('');
+	const { signUp } = useAuthStore((state) => state);
 
-	const handleCreateAccount = async () => {};
+	const handleCreateAccount = async () => {
+		const signedUp = await signUp(name, emailAddress, password);
+		if (signedUp) router.push('/boards');
+	};
 
 	return (
 		<div className="flex flex-col w-full h-screen items-center justify-center bg-gray-50">
@@ -40,7 +48,7 @@ const SignUpPage: React.FC = () => {
 						onChange={(e) => setPassword(e.target.value)}
 					/>
 				</div>
-				<Button label="Create Account" onClick={handleCreateAccount} />
+				<Button label="Create Account" onPress={handleCreateAccount} />
 				<p className="text-xs text-center">
 					Already have an account?
 					<span>

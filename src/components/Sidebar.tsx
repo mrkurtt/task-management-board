@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { GoProject } from 'react-icons/go';
-import { IoChevronUp, IoChevronDown } from 'react-icons/io5';
-import { LuListMinus } from 'react-icons/lu';
+import { TbSubtask } from 'react-icons/tb';
 import { IoPersonCircleOutline } from 'react-icons/io5';
 import Link from 'next/link';
 import SearchBar from './input/SearchBar';
@@ -15,15 +14,32 @@ import {
 	DropdownItem,
 } from '@heroui/react';
 import { useBoardStore } from '@/stores/useBoardStore';
+import AddBoardModal from './board/AddBoardModal';
+import BoardTools from './board/BoardTools';
+import { usePathname, useRouter } from 'next/navigation';
+import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [active, setActive] = useState('');
 	const [searchValue, setSearchValue] = useState('');
-	const [boardOpen, setBoardOpen] = useState(false);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const { currentUser, logout } = useAuthStore((state) => state);
+	const { getBoardsByUserId, boards, activeBoard } = useTaskBoardStore(
+		(state) => state
+	);
+	const pathname = usePathname();
+	const router = useRouter();
 
-	const boards = useBoardStore((state) => state.boards);
+	const handleLogout = () => {
+		logout();
+		router.push('/');
+	};
+
+	useEffect(() => {
+		getBoardsByUserId(currentUser!.user_id);
+	}, []);
 
 	return (
 		<div className="flex">
@@ -61,46 +77,36 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
 				{/* Navigation */}
 				<nav className="flex-1 overflow-y-auto">
-					<ul className="flex flex-col">
-						{/* Boards Dropdown */}
-						<li
-							className="px-4 py-3 hover:bg-gray-100 cursor-pointer"
-							onClick={() => setBoardOpen(!boardOpen)}
-						>
-							<div className="flex items-center justify-between">
-								<div className="flex items-center space-x-3">
-									<GoProject size={20} />
-									<span className="text-gray-900 text-sm">Boards</span>
-								</div>
-								{boardOpen ? <IoChevronUp /> : <IoChevronDown />}
+					<div className="flex items-center justify-between space-x-3 p-4">
+						<Link href={'/boards'}>
+							<div className="flex items-center gap-x-2 cursor-pointer">
+								<GoProject size={20} />
+								<span className="text-gray-900 text-sm">Boards</span>
 							</div>
-						</li>
-
+						</Link>
+						<AddBoardModal />
+					</div>
+					<ul className="flex flex-col">
 						{/* Dropdown Items */}
-						{boardOpen && (
-							<ul className="ml-8 mt-2 space-y-2">
-								{boards.map((board) => (
-									<li
-										key={board.id}
-										onClick={() => setActive(board.board_name)}
+						<ul className="ml-8 -mt-2 space-y-2 pr-4">
+							{boards.map((board) => (
+								<li key={board.id} onClick={() => setActive(board.name)}>
+									<Link
+										href={`/boards/${board.id}`}
+										className={`text-sm block px-4 py-2 hover:bg-gray-100 rounded ${
+											active === board.name
+												? 'bg-gray-100 text-blue-500'
+												: 'text-gray-500'
+										}`}
 									>
-										<Link
-											href={`/boards/${board.id}`}
-											className={`text-sm block px-4 py-2 hover:bg-gray-100 rounded ${
-												active === board.board_name
-													? 'bg-gray-100 text-blue-500'
-													: 'text-gray-500'
-											}`}
-										>
-											<div className="flex items-center gap-x-1">
-												<LuListMinus size={20} />
-												{board.board_name}
-											</div>
-										</Link>
-									</li>
-								))}
-							</ul>
-						)}
+										<div className="flex items-center gap-x-1">
+											<TbSubtask size={20} />
+											{board.name}
+										</div>
+									</Link>
+								</li>
+							))}
+						</ul>
 					</ul>
 				</nav>
 			</div>
@@ -132,12 +138,16 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 								>
 									<IoPersonCircleOutline size={30} color="#515050" />
 									<h1 className="text-gray-700 hidden sm:block text-sm">
-										Kurt Timajo
+										{currentUser?.name}
 									</h1>
 								</button>
 							</DropdownTrigger>
 							<DropdownMenu aria-label="Profile Actions" variant="flat">
-								<DropdownItem key="logout" color="danger">
+								<DropdownItem
+									key="logout"
+									color="danger"
+									onPress={handleLogout}
+								>
 									Log Out
 								</DropdownItem>
 							</DropdownMenu>
@@ -146,7 +156,22 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 				</header>
 
 				{/* Page Content */}
-				{/* <main className="max-w-full p-6">{children}</main> */}
+				<main className="flex flex-col p-2 md:p-4 lg:p-6">
+					{pathname !== '/boards' && (
+						<>
+							<div className="text-gray-600 gap-x-2">
+								<p className="text-sm text-gray-400">Board</p>
+								<p className="font-semibold text-2xl"> {activeBoard?.name}</p>
+							</div>
+							<hr className="mt-2 mb-4" />
+							<div className="flex justify-end mb-4">
+								<BoardTools />
+							</div>
+						</>
+					)}
+
+					<div className="overflow-x-hidden">{children}</div>
+				</main>
 			</div>
 		</div>
 	);

@@ -16,7 +16,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	return (
 		<div className="relative w-full max-w-md hidden sm:block">
 			<Input
-				// label="Email"
 				value={value}
 				labelPlacement="outside"
 				onChange={onChange}
