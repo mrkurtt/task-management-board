@@ -1,9 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import moment from 'moment';
 import { FaArrowRight } from 'react-icons/fa6';
-import { useBoardStore } from '@/stores/useBoardStore';
 import DeleteTask from './DeleteTask';
 import EditTask from './EditTask';
 import {
@@ -19,35 +18,43 @@ import {
 	DropdownItem,
 	Button,
 } from '@heroui/react';
-
-export interface Task {
-	id: string;
-	title: string;
-	description: string;
-	priority: 'Low' | 'Medium' | 'High';
-	dueDate: string;
-	tags: string[];
-	board_id: string;
-	column_id: string;
-}
+import { Column, Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
 
 interface TaskProps {
 	task: Task;
+	column_id: string;
+	column_name: string;
 }
-const TaskCard = ({ task }: TaskProps) => {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-	const { activeBoard } = useBoardStore((state) => state);
 
+const TaskCard = ({ task, column_id, column_name }: TaskProps) => {
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const { activeBoard, moveTaskToColumn } = useTaskBoardStore((state) => state);
+	const [toColumn, setToColumn] = useState('');
+
+	const handleMoveTask = () => {
+		moveTaskToColumn(activeBoard.id, column_id, toColumn, task.id);
+	};
 	return (
 		<>
 			<div
 				onClick={onOpen}
-				className="flex border border-gray-200 rounded-lg p-2 cursor-pointer"
+				className="flex border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50"
 			>
 				<div className="w-full flex flex-col gap-y-2">
+					<div
+						className={`w-16 flex justify-center text-xs rounded-full ${
+							task.priority === 'Low'
+								? 'bg-green-300'
+								: task.priority === 'Medium'
+								? 'bg-orange-300'
+								: 'bg-red-300'
+						}`}
+					>
+						{task.priority}
+					</div>
 					<h1 className="font-semibold">{task.title}</h1>
 					<hr />
-					<p className="text-sm text-gray-500">{task.description}</p>
+					<p className="text-xs text-gray-500">{task.description}</p>
 					<div className="flex gap-x-1">
 						{task.tags.map((tag, index) => (
 							<div
@@ -79,10 +86,10 @@ const TaskCard = ({ task }: TaskProps) => {
 									<p
 										className={`ml-4 text-gray-700 text-sm rounded-full px-2 text-center w-24 ${
 											task.priority == 'Low'
-												? 'bg-green-200 text-green-700'
+												? 'bg-green-300 '
 												: task.priority === 'Medium'
-												? 'bg-orange-200 text-orange-700'
-												: 'bg-red-200 text-red-700'
+												? 'bg-orange-300 '
+												: 'bg-red-300 '
 										}`}
 									>
 										{task.priority}
@@ -91,7 +98,7 @@ const TaskCard = ({ task }: TaskProps) => {
 								<div className=" flex flex-col">
 									<p className="font-semibold ">Due Date</p>
 									<p className={`text-gray-700 text-sm rounded-full ml-4`}>
-										{moment(task.dueDate).format('LL')}
+										{moment(task.due_date).format('LL')}
 									</p>
 								</div>
 								<div className=" flex flex-col">
@@ -110,8 +117,8 @@ const TaskCard = ({ task }: TaskProps) => {
 								<div className=" flex flex-col">
 									<p className="font-semibold ">Actions</p>
 									<div className="flex gap-x-1">
-										<EditTask task={task} />
-										<DeleteTask task={task} />
+										<EditTask task={task} column_id={column_id} />
+										<DeleteTask task={task} column_id={column_id} />
 										<Dropdown>
 											<DropdownTrigger>
 												<div className="border border-gray-300 p-2 rounded-lg cursor-pointer hover:bg-green-200">
@@ -119,10 +126,21 @@ const TaskCard = ({ task }: TaskProps) => {
 												</div>
 											</DropdownTrigger>
 											<DropdownMenu aria-label="Static Actions">
-												{activeBoard!.columns
-													.filter((col) => col !== task.column_id)
-													.map((col: any) => (
-														<DropdownItem key={col}>{col}</DropdownItem>
+												{activeBoard?.columns
+													.filter(
+														(col: Column) => col.column_name !== column_name
+													)
+													.map((col: Column) => (
+														<DropdownItem
+															key={col.id}
+															onPress={() => {
+																setToColumn(col.column_name);
+																handleMoveTask();
+																onClose();
+															}}
+														>
+															{col.column_name}
+														</DropdownItem>
 													))}
 											</DropdownMenu>
 										</Dropdown>

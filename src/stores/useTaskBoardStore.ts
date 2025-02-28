@@ -169,7 +169,7 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 									? {
 											...column,
 											tasks: [
-												...(column.tasks || []),
+												...(column.tasks ? [...column.tasks] : []),
 												{ id: `task_${Date.now()}`, ...taskData },
 											],
 									  }
@@ -178,8 +178,17 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
+
+			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
+
 			saveBoardsToStorage(updatedBoards);
-			return { boards: updatedBoards };
+
+			return {
+				boards: updatedBoards,
+				activeBoard: updatedBoard
+					? { ...updatedBoard, columns: [...updatedBoard.columns] } // Ensure a fresh reference
+					: state.activeBoard,
+			};
 		}),
 
 	// Update column name
@@ -236,35 +245,56 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 	moveTaskToColumn: (boardId, fromColumnId, toColumnId, taskId) =>
 		set((state) => {
 			let movedTask: Task | null = null;
+
 			const updatedBoards = state.boards.map((board) =>
 				board.id === boardId
 					? {
 							...board,
 							columns: board.columns.map((column) => {
 								if (column.id === fromColumnId) {
-									// Remove the task from the original column
-									movedTask =
-										(column.tasks ?? []).find((task) => task.id === taskId) ||
-										null;
-									return {
-										...column,
-										tasks: (column.tasks ?? []).filter(
-											(task) => task.id !== taskId
-										),
-									};
-								}
-								if (column.id === toColumnId && movedTask) {
-									// Add the task to the new column
-									return {
-										...column,
-										tasks: [...(column.tasks || []), movedTask],
-									};
+									const taskIndex = column.tasks?.findIndex(
+										(task) => task.id === taskId
+									);
+									if (taskIndex !== undefined && taskIndex !== -1) {
+										movedTask = column.tasks?.[taskIndex] || null;
+										const updatedTasks = column.tasks ? [...column.tasks] : [];
+										updatedTasks.splice(taskIndex, 1);
+										return { ...column, tasks: updatedTasks };
+									}
 								}
 								return column;
 							}),
 					  }
 					: board
 			);
+
+			if (movedTask) {
+				const updatedBoardsWithMovedTask = updatedBoards.map((board) =>
+					board.id === boardId
+						? {
+								...board,
+								columns: board.columns.map((column) =>
+									column.id === toColumnId
+										? {
+												...column,
+												tasks: [...(column.tasks || []), movedTask!],
+										  }
+										: column
+								),
+						  }
+						: board
+				);
+
+				saveBoardsToStorage(updatedBoardsWithMovedTask);
+
+				return {
+					boards: updatedBoardsWithMovedTask,
+					activeBoard:
+						updatedBoardsWithMovedTask.find((b) => b.id === boardId) ||
+						state.activeBoard,
+				};
+			}
+
 			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),

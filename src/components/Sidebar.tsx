@@ -13,7 +13,6 @@ import {
 	DropdownMenu,
 	DropdownItem,
 } from '@heroui/react';
-import { useBoardStore } from '@/stores/useBoardStore';
 import AddBoardModal from './board/AddBoardModal';
 import BoardTools from './board/BoardTools';
 import { usePathname, useRouter } from 'next/navigation';

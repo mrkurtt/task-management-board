@@ -12,17 +12,16 @@ import {
 	Radio,
 	Textarea,
 } from '@heroui/react';
-import { useTaskStore } from '@/stores/useTaskStore';
-import { Task } from './TaskCard';
 import { CiEdit } from 'react-icons/ci';
+import { Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
 
 interface EditTaskProps {
 	task: Task;
+	column_id: string;
 }
 
-const EditTask = ({ task }: EditTaskProps) => {
+const EditTask = ({ task, column_id }: EditTaskProps) => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-	const { updateTask } = useTaskStore((state) => state);
 
 	// Task state
 	const [title, setTitle] = useState(task.title);
@@ -30,12 +29,19 @@ const EditTask = ({ task }: EditTaskProps) => {
 	const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>(
 		task.priority
 	);
-	const [dueDate, setDueDate] = useState(task.dueDate);
+	const [dueDate, setDueDate] = useState(task.due_date);
 	const [tags, setTags] = useState(task.tags.join(','));
+	const { updateTask, activeBoard } = useTaskBoardStore((state) => state);
 
 	const handleEditTask = () => {
 		if (!title.trim()) return;
-		// Reset fields and close modal
+		updateTask(activeBoard.id, column_id, task.id, {
+			title,
+			description,
+			priority,
+			tags: tags.split(','),
+			due_date: dueDate,
+		});
 		setTitle('');
 		setDescription('');
 		setPriority('Medium');

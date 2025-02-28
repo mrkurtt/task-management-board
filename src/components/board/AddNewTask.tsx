@@ -14,6 +14,7 @@ import {
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
 import { useTaskStore } from '@/stores/useTaskStore';
+import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
 
 interface AddNewTaskProps {
 	board_id: string;
@@ -23,6 +24,7 @@ interface AddNewTaskProps {
 const AddNewTask = ({ board_id, column_id }: AddNewTaskProps) => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const { addNewTask } = useTaskStore((state) => state);
+	const { addTask, activeBoard } = useTaskBoardStore((state) => state);
 
 	// Task state
 	const [title, setTitle] = useState('');
@@ -34,14 +36,12 @@ const AddNewTask = ({ board_id, column_id }: AddNewTaskProps) => {
 	const handleAddTask = () => {
 		if (!title.trim()) return;
 
-		addNewTask({
+		addTask(board_id, column_id, {
 			title: title,
 			description: description,
 			priority: priority,
-			dueDate,
+			due_date: dueDate,
 			tags: tags.split(','),
-			board_id,
-			column_id,
 		});
 
 		// Reset fields and close modal

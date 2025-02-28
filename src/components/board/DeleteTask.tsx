@@ -11,13 +11,21 @@ import {
 	ModalFooter,
 } from '@heroui/react';
 import { MdDeleteOutline } from 'react-icons/md';
-import { Task } from './TaskCard';
+import { Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
 
 interface DeleteTaskProps {
 	task: Task;
+	column_id: string;
 }
-const DeleteTask = ({ task }: DeleteTaskProps) => {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+const DeleteTask = ({ task, column_id }: DeleteTaskProps) => {
+	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const { activeBoard, deleteTask } = useTaskBoardStore((state) => state);
+
+	const handleDelete = () => {
+		deleteTask(activeBoard.id, column_id, task.id);
+		onClose();
+		onClose();
+	};
 
 	return (
 		<div>
@@ -38,11 +46,11 @@ const DeleteTask = ({ task }: DeleteTaskProps) => {
 								<p>Are you sure you want to delete this task?</p>
 							</ModalBody>
 							<ModalFooter>
-								<Button color="danger" variant="light" onPress={onClose}>
+								<Button color="default" variant="light" onPress={onClose}>
 									Close
 								</Button>
-								<Button color="primary" onPress={onClose}>
-									Action
+								<Button color="danger" onPress={handleDelete}>
+									Delete
 								</Button>
 							</ModalFooter>
 						</>

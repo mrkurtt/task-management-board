@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCircle } from 'react-icons/fa';
 import EditColumnTitle from './EditColumnTitle';
-import TaskCard, { Task } from './TaskCard';
+import TaskCard from './TaskCard';
 import DeleteColumn from './DeleteColumn';
-import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
 import AddNewTask from './AddNewTask';
 
 interface ColumnProps {
@@ -16,8 +16,14 @@ interface ColumnProps {
 
 const Column = ({ name, index, id }: ColumnProps) => {
 	const [fetchedTasks, setFetchedTasks] = useState<Task[]>([]);
-	const { activeBoard } = useTaskBoardStore((state) => state);
+	const { activeBoard, getTasksByColumnId } = useTaskBoardStore(
+		(state) => state
+	);
 
+	useEffect(() => {
+		const _tasks = getTasksByColumnId(id);
+		setFetchedTasks(_tasks);
+	}, []);
 	return (
 		<div className="flex flex-col gap-y-2">
 			<div className="flex items-center justify-between bg-white border border-gray-300 p-2 rounded-lg ">
@@ -30,10 +36,10 @@ const Column = ({ name, index, id }: ColumnProps) => {
 					<DeleteColumn id={id} />
 				</div>
 			</div>
-			<AddNewTask board_id={activeBoard!.id} column_id={name} />
+			<AddNewTask board_id={activeBoard!.id} column_id={id} />
 			{fetchedTasks.map((task, index) => (
 				<div key={`task-${index}`}>
-					<TaskCard task={task} />
+					<TaskCard task={task} column_id={id} column_name={name} />
 				</div>
 			))}
 		</div>
