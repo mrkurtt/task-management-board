@@ -42,11 +42,6 @@ const EditTask = ({ task, column_id }: EditTaskProps) => {
 			tags: tags.split(','),
 			due_date: dueDate,
 		});
-		setTitle('');
-		setDescription('');
-		setPriority('Medium');
-		setDueDate('');
-		setTags('');
 		onClose();
 	};
 

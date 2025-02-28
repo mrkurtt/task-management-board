@@ -222,7 +222,12 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			return { boards: updatedBoards };
+			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
+
+			return {
+				boards: updatedBoards,
+				activeBoard: updatedBoard,
+			};
 		}),
 
 	// Move task to another column
@@ -277,7 +282,12 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 				};
 			}
 
-			return { boards: updatedBoards };
+			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
+
+			return {
+				boards: updatedBoards,
+				activeBoard: updatedBoard,
+			};
 		}),
 
 	// Delete a column and its tasks
@@ -321,7 +331,12 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			return { boards: updatedBoards };
+			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
+
+			return {
+				boards: updatedBoards,
+				activeBoard: updatedBoard,
+			};
 		}),
 
 	// Delete an entire board
