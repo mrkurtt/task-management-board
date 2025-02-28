@@ -26,7 +26,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const boards = useBoardStore((state) => state.boards);
 
 	return (
-		<div className="flex min-h-screen">
+		<div className="flex">
 			{/* Overlay for mobile */}
 			{isOpen && (
 				<div
@@ -37,29 +37,31 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
 			{/* Sidebar */}
 			<div
-				className={`fixed top-0 left-0 h-full min-w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
+				className={`fixed top-0 left-0 h-lvh min-w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
 					isOpen ? 'translate-x-0' : '-translate-x-64'
 				} md:translate-x-0 md:static md:w-60`}
 			>
-				<div className="flex flex-col py-4 pl-4">
-					<h1 className="text-blue-500 font-bold text-2xl">Syntask</h1>
-					<p className="text-gray-700 text-xs">A Task Management Board</p>
-				</div>
+				<div className="flex justify-between">
+					<div className="flex flex-col py-4 pl-4">
+						<h1 className="text-blue-500 font-bold text-2xl">Syntask</h1>
+						<p className="text-gray-700 text-xs">A Task Management Board</p>
+					</div>
 
-				{/* Close button (Mobile only) */}
-				<div className="p-4 flex justify-between items-center md:hidden">
-					<button
-						type="button"
-						title="Close Menu"
-						onClick={() => setIsOpen(false)}
-					>
-						<FiX size={24} />
-					</button>
+					{/* Close button (Mobile only) */}
+					<div className="p-4 flex justify-between items-center md:hidden">
+						<button
+							type="button"
+							title="Close Menu"
+							onClick={() => setIsOpen(false)}
+						>
+							<FiX size={24} />
+						</button>
+					</div>
 				</div>
 
 				{/* Navigation */}
-				<nav className="h-screen">
-					<ul>
+				<nav className="flex-1 overflow-y-auto">
+					<ul className="flex flex-col">
 						{/* Boards Dropdown */}
 						<li
 							className="px-4 py-3 hover:bg-gray-100 cursor-pointer"
@@ -68,7 +70,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 							<div className="flex items-center justify-between">
 								<div className="flex items-center space-x-3">
 									<GoProject size={20} />
-									<span className="text-gray-900">Boards</span>
+									<span className="text-gray-900 text-sm">Boards</span>
 								</div>
 								{boardOpen ? <IoChevronUp /> : <IoChevronDown />}
 							</div>
@@ -104,7 +106,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			</div>
 
 			{/* Main Content */}
-			<div className="flex-1">
+			<div className="flex-grow">
 				{/* Navbar */}
 				<header className=" bg-white border-b border-gray-300 p-4 flex justify-between items-center">
 					<button
@@ -119,7 +121,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 						value={searchValue}
 						onChange={(e) => setSearchValue(e.target.value)}
 					/>
-					<div>
+					<div className="ml-4">
 						<Dropdown placement="bottom-end">
 							<DropdownTrigger>
 								<button
@@ -129,7 +131,9 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 									onClick={() => setDropdownOpen(!dropdownOpen)}
 								>
 									<IoPersonCircleOutline size={30} color="#515050" />
-									<h1 className="text-gray-700 hidden sm:block">Kurt Timajo</h1>
+									<h1 className="text-gray-700 hidden sm:block text-sm">
+										Kurt Timajo
+									</h1>
 								</button>
 							</DropdownTrigger>
 							<DropdownMenu aria-label="Profile Actions" variant="flat">
@@ -142,7 +146,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 				</header>
 
 				{/* Page Content */}
-				<main className="max-w-full p-6">{children}</main>
+				{/* <main className="max-w-full p-6">{children}</main> */}
 			</div>
 		</div>
 	);
