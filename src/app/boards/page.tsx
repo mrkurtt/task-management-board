@@ -2,17 +2,15 @@
 
 import React, { useEffect } from 'react';
 import { Board, useTaskBoardStore } from '@/stores/useTaskBoardStore';
-import { useAuthStore } from '@/stores/useAuthStore';
 import Link from 'next/link';
 
 const HomePage = () => {
-	const { getBoardsByUserId, boards } = useTaskBoardStore((state) => state);
-	const { currentUser } = useAuthStore((state) => state);
+	const { boards, setUser } = useTaskBoardStore((state) => state);
+	const user_id = `_${Math.random().toString(36).substr(2, 9)}`;
 
 	useEffect(() => {
-		getBoardsByUserId(currentUser!.user_id);
+		setUser(user_id);
 	}, []);
-
 	return (
 		<div className="flex gap-x-2">
 			{boards.map((board: Board, index: number) => (

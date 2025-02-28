@@ -17,27 +17,24 @@ import AddBoardModal from './board/AddBoardModal';
 import BoardTools from './board/BoardTools';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
-import { useAuthStore } from '@/stores/useAuthStore';
 
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [active, setActive] = useState('');
 	const [searchValue, setSearchValue] = useState('');
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const { currentUser, logout } = useAuthStore((state) => state);
-	const { getBoardsByUserId, boards, activeBoard } = useTaskBoardStore(
+	const { getBoardsByUserId, boards, activeBoard, user } = useTaskBoardStore(
 		(state) => state
 	);
 	const pathname = usePathname();
 	const router = useRouter();
 
 	const handleLogout = () => {
-		logout();
 		router.push('/');
 	};
 
 	useEffect(() => {
-		getBoardsByUserId(currentUser!.user_id);
+		getBoardsByUserId(user);
 	}, []);
 
 	return (
@@ -137,7 +134,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 								>
 									<IoPersonCircleOutline size={30} color="#515050" />
 									<h1 className="text-gray-700 hidden sm:block text-sm">
-										{currentUser?.name}
+										Kurt Timajo
 									</h1>
 								</button>
 							</DropdownTrigger>

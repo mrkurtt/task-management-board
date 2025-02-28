@@ -12,18 +12,12 @@ interface ColumnProps {
 	id: string;
 	index: number;
 	name: string;
+	tasks: Task[];
 }
 
-const Column = ({ name, index, id }: ColumnProps) => {
-	const [fetchedTasks, setFetchedTasks] = useState<Task[]>([]);
-	const { activeBoard, getTasksByColumnId } = useTaskBoardStore(
-		(state) => state
-	);
+const Column = ({ name, index, id, tasks }: ColumnProps) => {
+	const { activeBoard } = useTaskBoardStore((state) => state);
 
-	useEffect(() => {
-		const _tasks = getTasksByColumnId(id);
-		setFetchedTasks(_tasks);
-	}, []);
 	return (
 		<div className="flex flex-col gap-y-2">
 			<div className="flex items-center justify-between bg-white border border-gray-300 p-2 rounded-lg ">
@@ -37,7 +31,7 @@ const Column = ({ name, index, id }: ColumnProps) => {
 				</div>
 			</div>
 			<AddNewTask board_id={activeBoard!.id} column_id={id} />
-			{fetchedTasks.map((task, index) => (
+			{tasks.map((task, index) => (
 				<div key={`task-${index}`}>
 					<TaskCard task={task} column_id={id} column_name={name} />
 				</div>

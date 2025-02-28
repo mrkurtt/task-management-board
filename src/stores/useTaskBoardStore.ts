@@ -52,11 +52,18 @@ type BoardState = {
 	deleteColumn: (boardId: string, columnId: string) => void;
 	deleteTask: (boardId: string, columnId: string, taskId: string) => void;
 	deleteBoard: (boardId: string) => void;
+	user_id: string;
+	setUser: (user: string) => void;
 };
 
 const generateId = () => `_${Math.random().toString(36).substr(2, 9)}`;
 
 export const useTaskBoardStore = create<BoardState>((set, get) => ({
+	user_id: '',
+	setUser: (user: string) =>
+		set({
+			user_id: user,
+		}),
 	boards: [],
 	activeBoard: {
 		id: '',
@@ -166,7 +173,7 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 
 			return {
 				boards: updatedBoards,
-				activeBoard: updatedBoard || state.activeBoard,
+				activeBoard: updatedBoard,
 			};
 		}),
 

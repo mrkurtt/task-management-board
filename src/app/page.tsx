@@ -1,5 +1,13 @@
-import LoginForm from '@/components/forms/LoginForm';
+'use client';
+
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Home() {
-	return <LoginForm />;
+	const router = useRouter();
+
+	useEffect(() => {
+		router.push('/boards');
+	}, []);
+	return <></>;
 }

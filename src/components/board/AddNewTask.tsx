@@ -13,7 +13,6 @@ import {
 	Textarea,
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
-import { useTaskStore } from '@/stores/useTaskStore';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
 
 interface AddNewTaskProps {
@@ -23,7 +22,6 @@ interface AddNewTaskProps {
 
 const AddNewTask = ({ board_id, column_id }: AddNewTaskProps) => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-	const { addNewTask } = useTaskStore((state) => state);
 	const { addTask, activeBoard } = useTaskBoardStore((state) => state);
 
 	// Task state

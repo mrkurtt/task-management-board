@@ -10,18 +10,15 @@ import {
 	Input,
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
-import { useBoardStore } from '@/stores/useBoardStore';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
-import { useAuthStore } from '@/stores/useAuthStore';
 
 const AddBoardModal = () => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-	const { addBoard } = useTaskBoardStore((state) => state);
-	const { currentUser } = useAuthStore((state) => state);
+	const { addBoard, user_id } = useTaskBoardStore((state) => state);
 	const [boardName, setBoardName] = useState('');
 
 	const handleAddNewBoard = () => {
-		addBoard(currentUser!.user_id, boardName);
+		addBoard(user_id, boardName);
 		onClose();
 	};
 
