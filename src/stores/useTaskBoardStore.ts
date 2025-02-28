@@ -54,25 +54,10 @@ type BoardState = {
 	deleteBoard: (boardId: string) => void;
 };
 
-// LocalStorage Utility Functions
-const getStoredBoards = (): Board[] => {
-	if (typeof window !== 'undefined') {
-		const storedBoards = localStorage.getItem('boards');
-		return storedBoards ? JSON.parse(storedBoards) : [];
-	}
-	return [];
-};
-
 const generateId = () => `_${Math.random().toString(36).substr(2, 9)}`;
 
-const saveBoardsToStorage = (boards: Board[]) => {
-	if (typeof window !== 'undefined') {
-		localStorage.setItem('boards', JSON.stringify(boards));
-	}
-};
-
 export const useTaskBoardStore = create<BoardState>((set, get) => ({
-	boards: getStoredBoards(),
+	boards: [],
 	activeBoard: {
 		id: '',
 		user_id: '',
@@ -88,7 +73,7 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 	// Get all boards belonging to a user
 	getBoardsByUserId: (userId) => {
 		set({
-			boards: getStoredBoards().filter((board) => board.user_id === userId),
+			boards: get().boards.filter((board) => board.user_id === userId),
 		});
 	},
 
@@ -128,7 +113,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 				],
 			};
 			const updatedBoards = [...state.boards, newBoard];
-			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),
 
@@ -146,7 +130,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			saveBoardsToStorage(updatedBoards);
 			return {
 				boards: updatedBoards,
 				activeBoard: {
@@ -169,7 +152,7 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 									? {
 											...column,
 											tasks: [
-												...(column.tasks ? [...column.tasks] : []),
+												...(column.tasks || []),
 												{ id: `task_${Date.now()}`, ...taskData },
 											],
 									  }
@@ -181,13 +164,9 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 
 			const updatedBoard = updatedBoards.find((board) => board.id === boardId);
 
-			saveBoardsToStorage(updatedBoards);
-
 			return {
 				boards: updatedBoards,
-				activeBoard: updatedBoard
-					? { ...updatedBoard, columns: [...updatedBoard.columns] } // Ensure a fresh reference
-					: state.activeBoard,
+				activeBoard: updatedBoard || state.activeBoard,
 			};
 		}),
 
@@ -206,7 +185,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			saveBoardsToStorage(updatedBoards);
 			return {
 				boards: updatedBoards,
 				activeBoard: {
@@ -237,7 +215,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),
 
@@ -285,8 +262,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 						: board
 				);
 
-				saveBoardsToStorage(updatedBoardsWithMovedTask);
-
 				return {
 					boards: updatedBoardsWithMovedTask,
 					activeBoard:
@@ -295,7 +270,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 				};
 			}
 
-			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),
 
@@ -310,7 +284,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			saveBoardsToStorage(updatedBoards);
 			return {
 				boards: updatedBoards,
 				activeBoard: {
@@ -341,7 +314,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 					  }
 					: board
 			);
-			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),
 
@@ -351,7 +323,6 @@ export const useTaskBoardStore = create<BoardState>((set, get) => ({
 			const updatedBoards = state.boards.filter(
 				(board) => board.id !== boardId
 			);
-			saveBoardsToStorage(updatedBoards);
 			return { boards: updatedBoards };
 		}),
 }));
