@@ -1,8 +1,6 @@
-# Project Name
+# Syntask - Task Management Board
 
-## Overview
-
-[Provide a brief description of your project, its purpose, and key functionalities.]
+Developed by Kurt Vincent Timajo
 
 ## Design Choices
 
