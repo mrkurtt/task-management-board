@@ -49,7 +49,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
 			{/* Sidebar */}
 			<div
-				className={`z-40 sticky top-0 left-0 h-lvh min-w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
+				className={`z-40 fixed top-0 left-0 h-lvh min-w-64 bg-white border-r border-gray-300 text-gray-500 shadow-lg transition-transform transform ${
 					isOpen ? 'translate-x-0' : '-translate-x-64'
 				} md:translate-x-0 md:static md:w-60`}
 			>
@@ -108,7 +108,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 			</div>
 
 			{/* Main Content */}
-			<div className="z-30 flex-grow">
+			<div className="flex-grow">
 				{/* Navbar */}
 				<header className=" bg-white border-b border-gray-300 p-4 flex justify-between items-center">
 					<button
