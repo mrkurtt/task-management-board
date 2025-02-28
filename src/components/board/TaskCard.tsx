@@ -103,7 +103,7 @@ const TaskCard = ({ task, column_id, column_name }: TaskProps) => {
 								</div>
 								<div className=" flex flex-col">
 									<p className="font-semibold ">Tags</p>
-									<div className="flex gap-x-1">
+									<div className="flex gap-x-1 pl-4">
 										{task.tags.map((tag, index) => (
 											<div
 												key={`tag-${index}`}

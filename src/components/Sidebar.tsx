@@ -23,7 +23,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	const [active, setActive] = useState('');
 	const [searchValue, setSearchValue] = useState('');
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const { getBoardsByUserId, boards, activeBoard, user } = useTaskBoardStore(
+	const { getBoardsByUserId, boards, activeBoard, user_id } = useTaskBoardStore(
 		(state) => state
 	);
 	const pathname = usePathname();
@@ -34,7 +34,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 	};
 
 	useEffect(() => {
-		getBoardsByUserId(user);
+		getBoardsByUserId(user_id);
 	}, []);
 
 	return (
