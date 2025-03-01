@@ -25,10 +25,11 @@ Developed by Kurt Vincent Timajo
 
 ### Libraries Used
 
-- **Next.js**: Core library for UI development.
+- **Next.js**: A React framework for building fast, server-rendered, and statically generated web applications.
 - **Zustand**: Manages global state without unnecessary complexity.
 - **Tailwind CSS**: Provides a utility-first approach for styling.
 - **React Icons**: Used for adding intuitive icons to the interface.
+- **HeroUI**: A component library that enhances the UI with modern, customizable elements.
 
 ## Running the App Locally
 
