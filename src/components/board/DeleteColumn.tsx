@@ -12,6 +12,7 @@ import {
 } from '@heroui/react';
 import { MdDeleteOutline } from 'react-icons/md';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 interface DeleteColumnProps {
 	id: string;
@@ -24,6 +25,11 @@ const DeleteColumn = ({ id }: DeleteColumnProps) => {
 	const handleDeleteColumn = () => {
 		deleteColumn(activeBoard.id, id);
 		onClose();
+		toast.showToast({
+			title: 'Success',
+			description: `Column deleted successfully.`,
+			color: 'success',
+		});
 	};
 
 	return (

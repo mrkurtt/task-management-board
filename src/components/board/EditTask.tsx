@@ -14,6 +14,7 @@ import {
 } from '@heroui/react';
 import { CiEdit } from 'react-icons/ci';
 import { Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 interface EditTaskProps {
 	task: Task;
@@ -42,6 +43,12 @@ const EditTask = ({ task, column_id }: EditTaskProps) => {
 			tags: tags.split(','),
 			due_date: dueDate,
 		});
+
+		toast.showToast({
+			title: 'Success',
+			description: `Task updated successfully.`,
+			color: 'success',
+		});
 		onClose();
 	};
 
@@ -58,7 +65,7 @@ const EditTask = ({ task, column_id }: EditTaskProps) => {
 					{(onClose) => (
 						<>
 							<ModalHeader className="flex flex-col gap-1">
-								Add a New Task
+								Edit Task
 							</ModalHeader>
 							<ModalBody className="flex flex-col gap-3">
 								<Input

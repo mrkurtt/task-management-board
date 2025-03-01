@@ -11,8 +11,9 @@ import {
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
-const AddBoardModal = () => {
+const AddNewBoard = () => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const { addBoard, user_id } = useTaskBoardStore((state) => state);
 	const [boardName, setBoardName] = useState('');
@@ -20,6 +21,11 @@ const AddBoardModal = () => {
 	const handleAddNewBoard = () => {
 		addBoard(user_id, boardName);
 		onClose();
+		toast.showToast({
+			title: 'Success',
+			description: `${boardName} board created successfully.`,
+			color: 'success',
+		});
 	};
 
 	return (
@@ -66,4 +72,4 @@ const AddBoardModal = () => {
 	);
 };
 
-export default AddBoardModal;
+export default AddNewBoard;

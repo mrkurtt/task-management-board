@@ -13,7 +13,7 @@ import {
 	DropdownMenu,
 	DropdownItem,
 } from '@heroui/react';
-import AddBoardModal from './board/AddBoardModal';
+import AddNewBoard from './board/AddNewBoard';
 import BoardTools from './board/BoardTools';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
@@ -80,7 +80,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 								<span className="text-gray-900 text-sm">Boards</span>
 							</div>
 						</Link>
-						<AddBoardModal />
+						<AddNewBoard />
 					</div>
 					<ul className="flex flex-col">
 						{/* Dropdown Items */}
@@ -152,7 +152,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 				</header>
 
 				{/* Page Content */}
-				<main className="flex flex-col p-2 md:p-4 lg:p-6">
+				<main className="flex flex-col p-4">
 					{pathname !== '/boards' && (
 						<>
 							<div className="text-gray-600 gap-x-2">

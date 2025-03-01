@@ -13,6 +13,7 @@ import {
 } from '@heroui/react';
 import { CiEdit } from 'react-icons/ci';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 const EditColumnTitle = ({
 	initialTitle,
@@ -31,6 +32,11 @@ const EditColumnTitle = ({
 		if (columnTitle.trim() !== '') {
 			updateColumnName(activeBoard.id, id, columnTitle);
 			onClose();
+			toast.showToast({
+				title: 'Success',
+				description: `Column title updated successfully.`,
+				color: 'success',
+			});
 		}
 	};
 

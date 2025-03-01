@@ -11,6 +11,7 @@ import {
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 const AddNewColumnModal = () => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -21,6 +22,11 @@ const AddNewColumnModal = () => {
 	const handleAddNewColumn = () => {
 		addColumn(activeBoard.id, columnName);
 		onClose();
+		toast.showToast({
+			title: 'Success',
+			description: `${columnName} column added successfully.`,
+			color: 'success',
+		});
 	};
 
 	return (

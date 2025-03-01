@@ -19,6 +19,7 @@ import {
 	Button,
 } from '@heroui/react';
 import { Column, Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 interface TaskProps {
 	task: Task;
@@ -27,13 +28,12 @@ interface TaskProps {
 }
 
 const TaskCard = ({ task, column_id, column_name }: TaskProps) => {
-	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const { activeBoard, moveTaskToColumn } = useTaskBoardStore((state) => state);
 	const [toColumn, setToColumn] = useState('');
 
 	const handleMoveTask = () => {
 		moveTaskToColumn(activeBoard.id, column_id, toColumn, task.id);
-		onClose();
 	};
 
 	useEffect(() => {

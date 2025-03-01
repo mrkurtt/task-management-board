@@ -12,6 +12,7 @@ import {
 } from '@heroui/react';
 import { MdDeleteOutline } from 'react-icons/md';
 import { Task, useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 interface DeleteTaskProps {
 	task: Task;
@@ -25,6 +26,12 @@ const DeleteTask = ({ task, column_id }: DeleteTaskProps) => {
 		deleteTask(activeBoard.id, column_id, task.id);
 		onClose();
 		onClose();
+
+		toast.showToast({
+			title: 'Success',
+			description: `Task deleted successfully.`,
+			color: 'success',
+		});
 	};
 
 	return (

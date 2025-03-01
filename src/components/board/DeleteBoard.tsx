@@ -13,6 +13,7 @@ import {
 import { MdDeleteOutline } from 'react-icons/md';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
 import { useRouter } from 'next/navigation';
+import { toast } from '../toast/CustomToast';
 
 const DeleteBoard = () => {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -23,6 +24,11 @@ const DeleteBoard = () => {
 		deleteBoard(activeBoard.id);
 		onClose();
 		router.push('/boards');
+		toast.showToast({
+			title: 'Success',
+			description: `Board deleted successfully.`,
+			color: 'success',
+		});
 	};
 
 	return (

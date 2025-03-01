@@ -14,6 +14,7 @@ import {
 } from '@heroui/react';
 import { IoAdd } from 'react-icons/io5';
 import { useTaskBoardStore } from '@/stores/useTaskBoardStore';
+import { toast } from '../toast/CustomToast';
 
 interface AddNewTaskProps {
 	board_id: string;
@@ -40,6 +41,12 @@ const AddNewTask = ({ board_id, column_id }: AddNewTaskProps) => {
 			priority: priority,
 			due_date: dueDate,
 			tags: tags.split(','),
+		});
+
+		toast.showToast({
+			title: 'Success',
+			description: `Task created successfully.`,
+			color: 'success',
 		});
 
 		// Reset fields and close modal
